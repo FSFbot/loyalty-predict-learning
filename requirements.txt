@@ -1,5 +1,5 @@
 # Aquisição e acesso aos dados
-kaggle==1.7.4.5
+kaggle==2.2.4
 SQLAlchemy==2.0.44
 python-dotenv==1.1.1
 
