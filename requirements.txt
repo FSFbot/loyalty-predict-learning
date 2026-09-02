@@ -1,0 +1,19 @@
+# Aquisição e acesso aos dados
+kaggle==1.7.4.5
+SQLAlchemy==2.0.44
+python-dotenv==1.1.1
+
+# Manipulação e acompanhamento
+pandas==2.3.3
+tqdm==4.67.1
+
+# Visualização
+matplotlib==3.10.7
+seaborn==0.13.2
+
+# Machine learning e engenharia de atributos
+scikit-learn==1.7.2
+feature-engine==1.9.3
+
+# Rastreamento de experimentos
+mlflow==3.4.0
