@@ -1,0 +1,21 @@
+# Ambiente virtual
+.venv/
+
+# Cache e bytecode do Python
+__pycache__/
+*.py[cod]
+
+# Caches de ferramentas
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
