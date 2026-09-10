@@ -23,3 +23,7 @@ Thumbs.db
 # Dados adquiridos e gerados localmente
 data/*
 !data/.gitkeep
+
+# Configurações locais de IDEs
+.idea/
+.vscode/
