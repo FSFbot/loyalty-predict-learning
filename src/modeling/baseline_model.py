@@ -272,17 +272,17 @@ def main() -> None:
 
     print("Validação do baseline ingênuo: OK")
     majority_class_index = (
-    model.class_prior_.argmax()
-)
+        model.class_prior_.argmax()
+    )
 
-majority_class = model.classes_[
-    majority_class_index
-]
+    majority_class = model.classes_[
+        majority_class_index
+    ]
 
-print(
+    print(
     "Estratégia: sempre prever a classe "
     f"{int(majority_class)}"
-)
+    )
 
     print_classification_metrics(
         "Validação",
