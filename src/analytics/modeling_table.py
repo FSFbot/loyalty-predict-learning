@@ -27,12 +27,13 @@ class ModelingRow:
     points_removed: int
     points_moved: int
     net_points: int
-    target_active_next_month: int
+    target_active_next_month: int | None
 
 
 def build_modeling_table(
     customer_months: list[CustomerMonth],
     targets: list[CustomerMonthTarget],
+    require_target: bool = True,
 ) -> list[ModelingRow]:
     target_index: dict[tuple[str, str], int] = {
         (
@@ -52,7 +53,7 @@ def build_modeling_table(
 
         target_value = target_index.get(key)
 
-        if target_value is None:
+        if require_target and target_value is None:
             continue
 
         modeling_rows.append(
