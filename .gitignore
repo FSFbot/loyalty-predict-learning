@@ -27,3 +27,8 @@ data/*
 # Configurações locais de IDEs
 .idea/
 .vscode/
+
+# Ambientes Linux e registros locais do MLflow
+.venv-linux/
+.venv-py312/
+mlruns/
