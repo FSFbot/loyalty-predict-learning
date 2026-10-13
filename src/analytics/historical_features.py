@@ -1,5 +1,5 @@
 import sqlite3
-from collections import defaultdict
+from collections import defaultdict, deque
 from contextlib import closing
 from dataclasses import dataclass
 
@@ -35,12 +35,13 @@ class HistoricalFeatureRow:
     active_months_last_3: int
     transaction_count_last_3_months: int
     net_points_last_3_months: int
-    target_active_next_month: int
+    target_active_next_month: int | None
 
 
 def build_historical_features(
     modeling_rows: list[ModelingRow],
 ) -> list[HistoricalFeatureRow]:
+    """Agrega o mês de referência e os dois meses anteriores do calendário."""
     rows_by_customer: defaultdict[
         str,
         list[ModelingRow],
@@ -56,17 +57,28 @@ def build_historical_features(
             key=lambda row: row.reference_month
         )
 
-        for row_index, current_row in enumerate(
-            customer_rows
-        ):
-            window_start = max(
-                0,
-                row_index - 2,
-            )
+        window_rows: deque[ModelingRow] = deque()
+        window_months: deque[int] = deque()
 
-            window_rows = customer_rows[
-                window_start : row_index + 1
-            ]
+        for current_row in customer_rows:
+            year, month = map(
+                int, current_row.reference_month.split("-")
+            )
+            current_month = year * 12 + month - 1
+
+            if window_months and window_months[-1] == current_month:
+                raise ValueError(
+                    "Linha de modelagem duplicada para "
+                    f"{current_row.customer_id} em "
+                    f"{current_row.reference_month}."
+                )
+
+            while window_months and window_months[0] < current_month - 2:
+                window_months.popleft()
+                window_rows.popleft()
+
+            window_months.append(current_month)
+            window_rows.append(current_row)
 
             observed_months_last_3 = len(window_rows)
 
@@ -138,6 +150,7 @@ def build_historical_features(
 def validate_historical_features(
     historical_rows: list[HistoricalFeatureRow],
     modeling_rows: list[ModelingRow],
+    allow_unknown_target: bool = False,
 ) -> None:
     if not historical_rows:
         raise ValueError(
@@ -204,7 +217,15 @@ def validate_historical_features(
                 f"{row.reference_month}."
             )
 
-        if row.target_active_next_month not in (0, 1):
+        unknown_target_allowed = (
+            allow_unknown_target
+            and row.target_active_next_month is None
+        )
+
+        if (
+            row.target_active_next_month not in (0, 1)
+            and not unknown_target_allowed
+        ):
             raise ValueError(
                 "Alvo inválido para "
                 f"{row.customer_id} em "
