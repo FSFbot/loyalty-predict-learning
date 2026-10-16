@@ -14,6 +14,10 @@ from src.analytics import education_history_features as ehf
 
 from src.analytics.modeling_table import build_modeling_table
 from src.engineering.config import DATA_DIR, KAGGLE_DATASETS
+from src.engineering.source_coverage import (
+    get_common_reference_month,
+    get_source_limits,
+)
 from src.modeling.batch_inference import prepare_features
 from src.modeling.modeling_dataset import (
     FEATURE_COLUMNS,
@@ -28,6 +32,11 @@ OUTPUT_PATH = (
 
 
 def build_inference_features() -> pd.DataFrame:
+    limits = get_source_limits()
+    reference_month = pd.Timestamp(
+        get_common_reference_month(limits)
+    )
+
     databases = {
         dataset.destination.name: (
             dataset.destination / "database.db"
@@ -145,11 +154,16 @@ def build_inference_features() -> pd.DataFrame:
         errors="raise",
     )
 
-    latest_month = dataset["reference_month"].max()
-
     latest = dataset.loc[
-        dataset["reference_month"] == latest_month
+        dataset["reference_month"] == reference_month
     ].copy()
+
+    if latest.empty:
+        raise ValueError(
+            "O mês de referência comum "
+            f"{reference_month:%Y-%m} "
+            "não está disponível na tabela de características."
+        )
 
     latest = latest.sort_values(
         "customer_id"
