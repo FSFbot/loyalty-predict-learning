@@ -317,6 +317,24 @@ python -m src.modeling.export_inference_features
 
 A saída é `data/inference/latest_features.csv`.
 
+## Interface local
+
+Com o ambiente ativo, execute na raiz do projeto:
+
+```bash
+python -m streamlit run app.py --server.address 127.0.0.1
+```
+
+Abra http://127.0.0.1:8501, informe um Run ID disponível no MLflow
+local e clique em **Gerar previsões**.
+
+A interface mostra o mês de referência, o mês previsto, o limiar,
+as quantidades e a tabela de previsões. O resultado pode ser baixado
+em CSV pelo botão **Baixar previsões em CSV**.
+
+Os resultados ficam na sessão da interface. Para salvar uma execução
+automaticamente em `data/inference/runs/`, use o módulo `run_inference`.
+
 ## Limitações e próximos desenvolvimentos
 
 - As datas dos eventos não garantem que uma extração esteja completa.
@@ -327,8 +345,7 @@ A saída é `data/inference/latest_features.csv`.
   diferentes erros ainda não foram definidos.
 - Atualizações ou correções nas fontes podem alterar as características.
 - As métricas históricas não garantem o desempenho em períodos futuros.
-- A interface de inferência e a análise de agrupamento de perfis ainda
-  não foram implementadas.
+- A análise de agrupamento de perfis ainda não foi implementada.
 - Monitoramento operacional e implantação não fazem parte da versão atual.
 
 ## Referência

@@ -17,3 +17,6 @@ feature-engine==1.9.3
 
 # Rastreamento de experimentos
 mlflow==3.4.0
+
+# Interface local
+streamlit==1.66.0
